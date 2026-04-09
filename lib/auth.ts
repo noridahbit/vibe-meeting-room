@@ -3,7 +3,6 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
-import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 
 const loginSchema = z.object({
@@ -35,6 +34,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
 
         const { email, password } = parsedCredentials.data;
+        const { db } = await import("@/lib/db");
         const user = db
           .select()
           .from(users)

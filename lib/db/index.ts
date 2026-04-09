@@ -5,6 +5,7 @@ import { mkdirSync } from "node:fs";
 import * as schema from "./schema";
 
 const DEFAULT_DATABASE_URL = "./data/mrbs.db";
+const VERCEL_TMP_DIR = "/tmp";
 const createDb = (client: Database.Database) =>
   drizzle(client, {
     schema,
@@ -18,6 +19,15 @@ declare global {
 function resolveDatabasePath(databaseUrl = process.env.DATABASE_URL ?? DEFAULT_DATABASE_URL) {
   if (databaseUrl.startsWith("file:")) {
     return new URL(databaseUrl).pathname;
+  }
+
+  if (path.isAbsolute(databaseUrl)) {
+    return databaseUrl;
+  }
+
+  if (process.env.VERCEL === "1") {
+    const relativePath = databaseUrl.replace(/^[./]+/, "");
+    return path.join(VERCEL_TMP_DIR, relativePath);
   }
 
   return path.isAbsolute(databaseUrl)
