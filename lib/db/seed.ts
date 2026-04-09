@@ -29,45 +29,45 @@ async function run() {
       name: "Rainforest Room",
       location: "Level 1 - North Wing",
       capacity: 4,
-      amenities: ["wifi", "display", "whiteboard"],
+      amenities: JSON.stringify(["wifi", "display", "whiteboard"]),
       isActive: true,
-      createdAt,
+      createdAt: createdAt.getTime(),
     },
     {
       id: uuidv4(),
       name: "Harbour Room",
       location: "Level 1 - South Wing",
       capacity: 6,
-      amenities: ["wifi", "projector", "conference-phone"],
+      amenities: JSON.stringify(["wifi", "projector", "conference-phone"]),
       isActive: true,
-      createdAt,
+      createdAt: createdAt.getTime(),
     },
     {
       id: uuidv4(),
       name: "Summit Room",
       location: "Level 2 - East Wing",
       capacity: 8,
-      amenities: ["wifi", "projector", "whiteboard", "video-call"],
+      amenities: JSON.stringify(["wifi", "projector", "whiteboard", "video-call"]),
       isActive: true,
-      createdAt,
+      createdAt: createdAt.getTime(),
     },
     {
       id: uuidv4(),
       name: "Riverside Boardroom",
       location: "Level 2 - West Wing",
       capacity: 10,
-      amenities: ["wifi", "projector", "video-call", "speakerphone"],
+      amenities: JSON.stringify(["wifi", "projector", "video-call", "speakerphone"]),
       isActive: true,
-      createdAt,
+      createdAt: createdAt.getTime(),
     },
     {
       id: uuidv4(),
       name: "Atrium Hall",
       location: "Ground Floor - Central Atrium",
       capacity: 14,
-      amenities: ["wifi", "projector", "microphone", "stage-display"],
+      amenities: JSON.stringify(["wifi", "projector", "microphone", "stage-display"]),
       isActive: true,
-      createdAt,
+      createdAt: createdAt.getTime(),
     },
   ];
 
@@ -78,11 +78,11 @@ async function run() {
       userId: staffUserId,
       title: "Client Planning Session",
       description: "Kick-off meeting to align agenda and project milestones.",
-      startTime: atHour(today, 9),
-      endTime: atHour(today, 10),
-      attendees: ["staff@company.com", "ops@company.com"],
+      startTime: atHour(today, 9).getTime(),
+      endTime: atHour(today, 10).getTime(),
+      attendees: JSON.stringify(["staff@company.com", "ops@company.com"]),
       status: "confirmed" as const,
-      createdAt,
+      createdAt: createdAt.getTime(),
     },
     {
       id: uuidv4(),
@@ -90,11 +90,11 @@ async function run() {
       userId: adminUserId,
       title: "Leadership Sync",
       description: "Weekly planning session for department heads.",
-      startTime: atHour(today, 14),
-      endTime: atHour(today, 15, 30),
-      attendees: ["admin@company.com", "finance@company.com", "hr@company.com"],
+      startTime: atHour(today, 14).getTime(),
+      endTime: atHour(today, 15, 30).getTime(),
+      attendees: JSON.stringify(["admin@company.com", "finance@company.com", "hr@company.com"]),
       status: "confirmed" as const,
-      createdAt,
+      createdAt: createdAt.getTime(),
     },
     {
       id: uuidv4(),
@@ -102,11 +102,11 @@ async function run() {
       userId: staffUserId,
       title: "Town Hall Rehearsal",
       description: "Dry run for tomorrow's all-hands presentation.",
-      startTime: atHour(tomorrow, 11),
-      endTime: atHour(tomorrow, 12),
-      attendees: ["staff@company.com", "comms@company.com", "it@company.com"],
+      startTime: atHour(tomorrow, 11).getTime(),
+      endTime: atHour(tomorrow, 12).getTime(),
+      attendees: JSON.stringify(["staff@company.com", "comms@company.com", "it@company.com"]),
       status: "confirmed" as const,
-      createdAt,
+      createdAt: createdAt.getTime(),
     },
   ];
 
@@ -124,7 +124,7 @@ async function run() {
           password: adminPassword,
           role: "admin",
           department: "Operations",
-          createdAt,
+          createdAt: createdAt.getTime(),
         },
         {
           id: staffUserId,
@@ -133,13 +133,13 @@ async function run() {
           password: staffPassword,
           role: "user",
           department: "General Affairs",
-          createdAt,
+          createdAt: createdAt.getTime(),
         },
-      ])
+      ] as any)
       .run();
 
-    db.insert(rooms).values(seededRooms).run();
-    db.insert(bookings).values(seededBookings).run();
+    db.insert(rooms).values(seededRooms as any).run();
+    db.insert(bookings).values(seededBookings as any).run();
   })();
 
   console.log(

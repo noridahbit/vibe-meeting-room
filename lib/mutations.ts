@@ -25,10 +25,10 @@ export async function createRoom(input: RoomInput) {
       name: input.name,
       location: input.location || null,
       capacity: input.capacity,
-      amenities: input.amenities,
+      amenities: JSON.stringify(input.amenities),
       isActive: input.isActive,
-      createdAt: new Date(),
-    })
+      createdAt: Date.now(),
+    } as any)
     .run();
 
   return db.select().from(rooms).where(eq(rooms.id, roomId)).get() ?? null;
@@ -40,9 +40,9 @@ export async function updateRoom(id: string, input: RoomInput) {
       name: input.name,
       location: input.location || null,
       capacity: input.capacity,
-      amenities: input.amenities,
+      amenities: JSON.stringify(input.amenities),
       isActive: input.isActive,
-    })
+    } as any)
     .where(eq(rooms.id, id))
     .run();
 
@@ -77,12 +77,12 @@ export async function createBooking(userId: string, input: BookingInput) {
       userId,
       title: input.title,
       description: input.description || null,
-      startTime,
-      endTime,
-      attendees: input.attendees,
+      startTime: startTime.getTime(),
+      endTime: endTime.getTime(),
+      attendees: JSON.stringify(input.attendees),
       status: "confirmed",
-      createdAt: new Date(),
-    })
+      createdAt: Date.now(),
+    } as any)
     .run();
 
   const booking = getBookingById(bookingId);
@@ -123,10 +123,10 @@ export async function updateBooking(
       roomId: input.roomId,
       title: input.title,
       description: input.description || null,
-      startTime,
-      endTime,
-      attendees: input.attendees,
-    })
+      startTime: startTime.getTime(),
+      endTime: endTime.getTime(),
+      attendees: JSON.stringify(input.attendees),
+    } as any)
     .where(eq(bookings.id, id))
     .run();
 

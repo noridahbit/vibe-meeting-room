@@ -3,9 +3,6 @@ import { eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 import type Database from "better-sqlite3";
 import { bookings, rooms, users } from "./schema";
-import type { db } from "./index";
-
-type DbClient = typeof db;
 
 function atHour(baseDate: Date, hour: number, minute = 0) {
   const date = new Date(baseDate);
@@ -54,7 +51,7 @@ function ensureSchema(sqlite: Database.Database) {
   `);
 }
 
-export function ensureDatabaseReady(sqlite: Database.Database, database: DbClient) {
+export function ensureDatabaseReady(sqlite: Database.Database, database: any) {
   ensureSchema(sqlite);
 
   const adminEmail = "admin@company.com";
@@ -85,7 +82,7 @@ export function ensureDatabaseReady(sqlite: Database.Database, database: DbClien
       capacity: 4,
       amenities: ["wifi", "display", "whiteboard"],
       isActive: true,
-      createdAt,
+      createdAt: createdAt.getTime(),
     },
     {
       id: uuidv4(),
@@ -94,7 +91,7 @@ export function ensureDatabaseReady(sqlite: Database.Database, database: DbClien
       capacity: 6,
       amenities: ["wifi", "projector", "conference-phone"],
       isActive: true,
-      createdAt,
+      createdAt: createdAt.getTime(),
     },
     {
       id: uuidv4(),
@@ -103,7 +100,7 @@ export function ensureDatabaseReady(sqlite: Database.Database, database: DbClien
       capacity: 8,
       amenities: ["wifi", "projector", "whiteboard", "video-call"],
       isActive: true,
-      createdAt,
+      createdAt: createdAt.getTime(),
     },
     {
       id: uuidv4(),
@@ -112,7 +109,7 @@ export function ensureDatabaseReady(sqlite: Database.Database, database: DbClien
       capacity: 10,
       amenities: ["wifi", "projector", "video-call", "speakerphone"],
       isActive: true,
-      createdAt,
+      createdAt: createdAt.getTime(),
     },
     {
       id: uuidv4(),
@@ -121,7 +118,7 @@ export function ensureDatabaseReady(sqlite: Database.Database, database: DbClien
       capacity: 14,
       amenities: ["wifi", "projector", "microphone", "stage-display"],
       isActive: true,
-      createdAt,
+      createdAt: createdAt.getTime(),
     },
   ];
 
@@ -132,11 +129,11 @@ export function ensureDatabaseReady(sqlite: Database.Database, database: DbClien
       userId: staffUserId,
       title: "Client Planning Session",
       description: "Kick-off meeting to align agenda and project milestones.",
-      startTime: atHour(today, 9),
-      endTime: atHour(today, 10),
-      attendees: ["staff@company.com", "ops@company.com"],
+      startTime: atHour(today, 9).getTime(),
+      endTime: atHour(today, 10).getTime(),
+      attendees: JSON.stringify(["staff@company.com", "ops@company.com"]),
       status: "confirmed" as const,
-      createdAt,
+      createdAt: createdAt.getTime(),
     },
     {
       id: uuidv4(),
@@ -144,11 +141,11 @@ export function ensureDatabaseReady(sqlite: Database.Database, database: DbClien
       userId: adminUserId,
       title: "Leadership Sync",
       description: "Weekly planning session for department heads.",
-      startTime: atHour(today, 14),
-      endTime: atHour(today, 15, 30),
-      attendees: ["admin@company.com", "finance@company.com", "hr@company.com"],
+      startTime: atHour(today, 14).getTime(),
+      endTime: atHour(today, 15, 30).getTime(),
+      attendees: JSON.stringify(["admin@company.com", "finance@company.com", "hr@company.com"]),
       status: "confirmed" as const,
-      createdAt,
+      createdAt: createdAt.getTime(),
     },
     {
       id: uuidv4(),
@@ -156,11 +153,11 @@ export function ensureDatabaseReady(sqlite: Database.Database, database: DbClien
       userId: staffUserId,
       title: "Town Hall Rehearsal",
       description: "Dry run for tomorrow's all-hands presentation.",
-      startTime: atHour(tomorrow, 11),
-      endTime: atHour(tomorrow, 12),
-      attendees: ["staff@company.com", "comms@company.com", "it@company.com"],
+      startTime: atHour(tomorrow, 11).getTime(),
+      endTime: atHour(tomorrow, 12).getTime(),
+      attendees: JSON.stringify(["staff@company.com", "comms@company.com", "it@company.com"]),
       status: "confirmed" as const,
-      createdAt,
+      createdAt: createdAt.getTime(),
     },
   ];
 
@@ -175,7 +172,7 @@ export function ensureDatabaseReady(sqlite: Database.Database, database: DbClien
           password: bcrypt.hashSync("admin123", 10),
           role: "admin",
           department: "Operations",
-          createdAt,
+          createdAt: createdAt.getTime(),
         },
         {
           id: staffUserId,
@@ -184,12 +181,12 @@ export function ensureDatabaseReady(sqlite: Database.Database, database: DbClien
           password: bcrypt.hashSync("staff123", 10),
           role: "user",
           department: "General Affairs",
-          createdAt,
+          createdAt: createdAt.getTime(),
         },
-      ])
+      ] as any)
       .run();
 
-    database.insert(rooms).values(seededRooms).run();
-    database.insert(bookings).values(seededBookings).run();
+    database.insert(rooms).values(seededRooms as any).run();
+    database.insert(bookings).values(seededBookings as any).run();
   })();
 }

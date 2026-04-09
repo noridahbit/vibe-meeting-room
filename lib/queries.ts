@@ -71,15 +71,18 @@ function getBookingRows(filter: BookingFilter = {}) {
 
   if (filter.date) {
     const { start, end } = getDayRange(filter.date);
-    conditions.push(gte(bookings.startTime, start), lte(bookings.startTime, end));
+    conditions.push(
+      sql`${bookings.startTime} >= ${start.getTime()}`,
+      sql`${bookings.startTime} <= ${end.getTime()}`,
+    );
   }
 
   if (filter.from) {
-    conditions.push(gte(bookings.startTime, filter.from));
+    conditions.push(sql`${bookings.startTime} >= ${filter.from.getTime()}`);
   }
 
   if (filter.to) {
-    conditions.push(lte(bookings.startTime, filter.to));
+    conditions.push(sql`${bookings.startTime} <= ${filter.to.getTime()}`);
   }
 
   if (filter.roomId) {
@@ -145,8 +148,8 @@ export function findConflictingBooking(input: {
   const conditions = [
     eq(bookings.roomId, input.roomId),
     eq(bookings.status, "confirmed"),
-    sql`${bookings.startTime} < ${input.endTime}`,
-    sql`${bookings.endTime} > ${input.startTime}`,
+    sql`${bookings.startTime} < ${input.endTime.getTime()}`,
+    sql`${bookings.endTime} > ${input.startTime.getTime()}`,
   ];
 
   if (input.bookingId) {
@@ -186,8 +189,8 @@ export function getWeekBookingCountForUser(userId: string) {
       and(
         eq(bookings.userId, userId),
         eq(bookings.status, "confirmed"),
-        gte(bookings.startTime, start),
-        lte(bookings.startTime, end),
+        sql`${bookings.startTime} >= ${start.getTime()}`,
+        sql`${bookings.startTime} <= ${end.getTime()}`,
       ),
     )
     .get();
