@@ -3,6 +3,7 @@ import { drizzle } from "drizzle-orm/better-sqlite3";
 import path from "node:path";
 import { mkdirSync } from "node:fs";
 import * as schema from "./schema";
+import { ensureDatabaseReady } from "./bootstrap";
 
 const DEFAULT_DATABASE_URL = "./data/mrbs.db";
 const VERCEL_TMP_DIR = "/tmp";
@@ -46,9 +47,14 @@ function createSqliteClient() {
   return client;
 }
 
-export const sqlite = globalThis.__mrbsSqlite__ ?? createSqliteClient();
+const sqliteClient = globalThis.__mrbsSqlite__ ?? createSqliteClient();
+const drizzleDb = globalThis.__mrbsDb__ ?? createDb(sqliteClient);
 
-export const db = globalThis.__mrbsDb__ ?? createDb(sqlite);
+ensureDatabaseReady(sqliteClient, drizzleDb);
+
+export const sqlite = sqliteClient;
+
+export const db = drizzleDb;
 
 if (process.env.NODE_ENV !== "production") {
   globalThis.__mrbsSqlite__ = sqlite;
