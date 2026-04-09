@@ -6,21 +6,42 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "node --import tsx ./lib/db/migrate.ts",
+    "db:seed": "node --import tsx ./lib/db/seed.ts",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@auth/drizzle-adapter": "^1.11.1",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/nodemailer": "^8.0.0",
+    "@types/uuid": "^10.0.0",
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^12.8.0",
+    "date-fns": "^4.1.0",
+    "drizzle-kit": "^0.31.10",
+    "drizzle-orm": "^0.45.2",
     "next": "16.2.3",
+    "next-auth": "^5.0.0-beta.30",
+    "nodemailer": "^7.0.13",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-big-calendar": "^1.19.4",
+    "react-dom": "19.2.4",
+    "uuid": "^13.0.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20",
     "@types/react": "^19",
+    "@types/react-big-calendar": "^1.16.3",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.3",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }
